@@ -20,11 +20,11 @@ export default class extends Phaser.Sprite {
   update(cursors) {
     if (cursors) {
       if (cursors.left.isDown) {
-        this.body.velocity.x = -150;
+        this.body.velocity.x = -120;
         this.play('left');
       }
       else if (cursors.right.isDown) {
-        this.body.velocity.x = 150;
+        this.body.velocity.x = 120;
         this.play('right');
       }
       // else if (cursors.up.isDown) {
