@@ -21,18 +21,29 @@ export default class extends Phaser.Sprite {
   	this.body.fixedRotation = true;
     this.body.collideWorldBounds = true;
     this.body.onBeginContact.add(this.handleCollision, this);
+    this.body.onEndContact.add(() => {
+      this.inspecting = null
+    })
   }
 
   update(cursors) {
     // this.body.setZeroVelocity();
 
-    if (cursors) {
+    if (cursors && this.body) {
       if (cursors.left.isDown) {
         this.body.moveLeft(120);
         this.play('left');
+
+        if (this.scale.x > 0) {
+          this.scale.x *= -1;
+        }
       }
       else if (cursors.right.isDown) {
         this.body.moveRight(120);
+
+        if (this.scale.x < 0) {
+          this.scale.x *= -1;
+        }
         this.play('right');
       }
       // else if (cursors.up.isDown) {

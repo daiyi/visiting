@@ -4,6 +4,10 @@ import Phaser, {Graphics, Group, Text} from 'phaser'
 import Meimei from '../sprites/Meimei'
 import Noah from '../sprites/Noah'
 
+let savedState = {
+  player: {x: 100, y: config.gameHeight - 100}
+};
+
 export default class extends Phaser.State {
 
   init () {
@@ -37,30 +41,30 @@ export default class extends Phaser.State {
     this.dialogue.add(this.dialogueBox)
     this.dialogue.add(this.dialogueText)
     this.dialogue.visible = false;
-  }
-
-  preload () {
 
     let background = game.add.image(0, 0, 'courtyard');
     background.width = config.gameWidth;
     background.height = config.gameHeight;
 
     this.player = new Meimei({
-      x: 100,
-      y: config.gameHeight - 100,
+      x: savedState.player.x,
+      y: savedState.player.y,
       asset: 'player'
-    })
+    });
 
     this.noah = new Noah({
       x: 300,
       y: config.gameHeight - 100,
-      asset: 'player'
+      asset: 'noah'
     })
 
     this.game.add.existing(this.player)
     this.game.add.existing(this.noah)
     this.game.add.existing(this.dialogue)
     // this.camera.follow(this.player);
+  }
+
+  preload () {
   }
 
   create () {
@@ -73,6 +77,12 @@ export default class extends Phaser.State {
     if (this.input.keyboard.isDown(Phaser.KeyCode.E)) {
       this.state.start('Notebook')
     }
+    else if (this.input.keyboard.isDown(Phaser.KeyCode.P)) {
+    }
+  }
+
+  shutdown() {
+    savedState.player = this.player
   }
 
   render () {
