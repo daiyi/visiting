@@ -2,6 +2,7 @@
 import config from '../config'
 import Phaser, {Graphics, Group, Text} from 'phaser'
 import Meimei from '../sprites/Meimei'
+import Noah from '../sprites/Noah'
 
 export default class extends Phaser.State {
 
@@ -9,7 +10,12 @@ export default class extends Phaser.State {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.input.keyboard.addCallbacks(this, null, (keyboardE) => {
       if (keyboardE.keyCode == Phaser.KeyCode.SPACEBAR) {
-        this.dialogue.visible = !this.dialogue.visible
+        let text = "you are visiting.";
+        if (this.player.inspecting) {
+          text = this.player.inspecting.dialogue;
+        }
+        this.dialogue.children[1].setText(text);
+        this.dialogue.visible = !this.dialogue.visible;
       }
     })
 
@@ -44,7 +50,15 @@ export default class extends Phaser.State {
       y: config.gameHeight - 100,
       asset: 'player'
     })
+
+    this.noah = new Noah({
+      x: 300,
+      y: config.gameHeight - 100,
+      asset: 'player'
+    })
+
     this.game.add.existing(this.player)
+    this.game.add.existing(this.noah)
     this.game.add.existing(this.dialogue)
     // this.camera.follow(this.player);
   }
@@ -53,6 +67,7 @@ export default class extends Phaser.State {
   }
 
   update() {
+    this.game.physics.arcade.collide(this.player, this.noah);
     this.player.update(this.cursors)
 
     if (this.input.keyboard.isDown(Phaser.KeyCode.E)) {
