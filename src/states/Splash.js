@@ -6,7 +6,6 @@ export default class extends Phaser.State {
 
   preload () {
     // this.load.spritesheet('player', './assets/sprites/meimei.png', 16, 16)
-    game.load.image('courtyard', 'assets/images/courtyard.jpg');
   }
 
   create () {

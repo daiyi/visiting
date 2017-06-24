@@ -8,6 +8,8 @@ export default class extends Phaser.State {
   preload () {
     // game.load.tilemap(...)
     this.load.spritesheet('player', './assets/sprites/shadow.png', 77, 131)
+    game.load.image('courtyard', 'assets/images/courtyard.jpg');
+    game.load.image('notebook', 'assets/images/notebook.jpg');
   }
 
   render () {

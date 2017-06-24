@@ -23,7 +23,7 @@ export default class extends Phaser.State {
       asset: 'player'
     })
     this.game.add.existing(this.player)
-    this.camera.follow(this.player);
+    // this.camera.follow(this.player);
   }
 
   create () {
@@ -31,6 +31,10 @@ export default class extends Phaser.State {
 
   update() {
     this.player.update(this.cursors)
+
+    if (this.input.keyboard.isDown(Phaser.KeyCode.E)) {
+      this.state.start('Notebook')
+    }
   }
 
   render () {
