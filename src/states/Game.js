@@ -4,17 +4,9 @@ import Phaser, {Graphics, Group, Text} from 'phaser'
 import Meimei from '../sprites/Meimei'
 import Friend from '../sprites/Friend'
 
-// todo save friend dialogue states.
-// ugh there must be a better way
-let savedState = {
-  player: {x: 100, y: config.gameHeight - 100, scale: {x: 1, y: 1}}
-};
-
 export default class extends Phaser.State {
 
   init () {
-    game.ambientText = "you are visiting."
-
     this.cursors = this.input.keyboard.createCursorKeys();
     this.input.keyboard.addCallbacks(this, null, this.handleDialogue)
 
@@ -42,15 +34,15 @@ export default class extends Phaser.State {
     background.height = config.gameHeight;
 
     this.player = new Meimei({
-      x: savedState.player.x,
-      y: savedState.player.y,
-      asset: 'player',
+      x: this.game.saveState.player.x,
+      y: this.game.saveState.player.y,
+      asset: 'player_walk',
     });
-    this.player.scale = savedState.player.scale;
+    this.player.scale = this.game.saveState.player.scale;
 
     this.friend = new Friend({
       x: 300,
-      y: config.gameHeight - 100,
+      y: this.game.saveState.player.y - 10,
       asset: 'friend'
     })
 
@@ -74,11 +66,12 @@ export default class extends Phaser.State {
       this.state.start('Notebook')
     }
     else if (this.input.keyboard.isDown(Phaser.KeyCode.P)) {
+      debugger
     }
   }
 
   shutdown() {
-    savedState.player = this.player
+    this.game.saveState.player = this.player
   }
 
   render () {
@@ -90,13 +83,16 @@ export default class extends Phaser.State {
 
   handleDialogue(keyboardEvent) {
     if (keyboardEvent.keyCode == Phaser.KeyCode.SPACEBAR) {
-      let text = game.ambientText;
+      let text = this.game.saveState.ambientText;
       let inspecting = this.player.inspecting;
 
       if (this.dialogue.visible) {
         if (inspecting && inspecting.hasNextAction()) {
-          text = `${inspecting.key}: ${inspecting.nextAction()}`;
-          this.dialogue.visible = true;
+          text = inspecting.nextAction();
+          if (text) {
+            text = `${inspecting.key}: ${text}`;
+            this.dialogue.visible = true;
+          }
         }
         else {
           this.dialogue.visible = false;
@@ -104,8 +100,11 @@ export default class extends Phaser.State {
       }
       else {
         if (inspecting && inspecting.hasNextAction()) {
-          text = `${inspecting.key}: ${inspecting.nextAction()}`;
-          this.dialogue.visible = true;
+          text = inspecting.nextAction();
+          if (text) {
+            text = `${inspecting.key}: ${text}`;
+            this.dialogue.visible = true;
+          }
         }
         else {
           this.dialogue.visible = true;

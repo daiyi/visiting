@@ -8,6 +8,7 @@ import GameState from './states/Game'
 import NotebookState from './states/Notebook'
 
 import config from './config'
+import saveState from './saveState'
 
 class Game extends Phaser.Game {
 
@@ -21,6 +22,8 @@ class Game extends Phaser.Game {
     this.state.add('Notebook', NotebookState, false)
 
     this.state.start('Boot')
+
+    this.saveState = saveState
   }
 }
 

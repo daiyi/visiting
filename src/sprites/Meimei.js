@@ -4,14 +4,14 @@ import Phaser from 'phaser'
 export default class extends Phaser.Sprite {
 
   constructor({x, y, asset }) {
-    super(game, x, y, 'player', 1)
+    super(game, x, y, asset, 1)
 
     // who we talkin to?
     this.inspecting = null;
 
     this.anchor.setTo(0.5)
-    // this.animations.add('left', [8,9], 10, true)
-    // this.animations.add('right', [1,2], 10, true)
+    this.animations.add('left', [1, 2, 3, 4, 2], 8, true)
+    this.animations.add('right', [1, 2, 3, 4, 2], 8, true)
     // this.animations.add('up', [11,12,13], 10, true)
     // this.animations.add('down', [4,5,6], 10, true)
 
