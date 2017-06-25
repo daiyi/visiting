@@ -28,21 +28,32 @@ module.exports = {
   plugins: [
     definePlugin,
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.optimize.UglifyJsPlugin({
-      drop_console: true,
-      minimize: true,
-      output: {
-        comments: false
-      }
-    }),
+    // TODO
+    // new webpack.optimize.UglifyJsPlugin({
+    //   drop_console: true,
+    //   minimize: true,
+    //   output: {
+    //     comments: false
+    //   }
+    // }),
     new webpack.optimize.CommonsChunkPlugin({ name: 'vendor'/* chunkName= */, filename: 'vendor.bundle.js'/* filename= */}),
   ],
   module: {
     rules: [
-      { test: /\.js$/, use: ['babel-loader'], include: path.join(__dirname, 'src') },
+      // { test: /\.js$/, use: ['babel-loader'], include: path.join(__dirname, 'src') },
       { test: /pixi\.js/, use: ['expose-loader?PIXI'] },
       { test: /phaser-split\.js$/, use: ['expose-loader?Phaser'] },
       { test: /p2\.js/, use: ['expose-loader?p2'] }
+    ],
+    loaders: [
+      {
+        test: /\.js$/,
+        include: path.join(__dirname, 'src'),
+        loader: "babel-loader",
+        query: {
+            presets: ["es2015"]
+        }
+      }
     ]
   },
   node: {
