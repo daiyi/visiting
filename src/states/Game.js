@@ -2,26 +2,21 @@
 import config from '../config'
 import Phaser, {Graphics, Group, Text} from 'phaser'
 import Meimei from '../sprites/Meimei'
-import Noah from '../sprites/Noah'
+import Friend from '../sprites/Friend'
 
+// todo save friend dialogue states.
+// ugh there must be a better way
 let savedState = {
-  player: {x: 100, y: config.gameHeight - 100}
+  player: {x: 100, y: config.gameHeight - 100, scale: {x: 1, y: 1}}
 };
 
 export default class extends Phaser.State {
 
   init () {
+    game.ambientText = "you are visiting."
+
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.input.keyboard.addCallbacks(this, null, (keyboardE) => {
-      if (keyboardE.keyCode == Phaser.KeyCode.SPACEBAR) {
-        let text = "you are visiting.";
-        if (this.player.inspecting) {
-          text = this.player.inspecting.dialogue;
-        }
-        this.dialogue.children[1].setText(text);
-        this.dialogue.visible = !this.dialogue.visible;
-      }
-    })
+    this.input.keyboard.addCallbacks(this, null, this.handleDialogue)
 
     this.dialogueBox = new Graphics(game, 50, 50);
     this.dialogueBox.beginFill(0x000000, 0.8);
@@ -35,7 +30,7 @@ export default class extends Phaser.State {
       wordWrap: true,
       wordWrapWidth: 600
     });
-    this.dialogueText.alignIn(this.dialogueBox, Phaser.TOP_LEFT, -10, -10);
+    this.dialogueText.alignIn(this.dialogueBox, Phaser.TOP_LEFT, -20, -20);
 
     this.dialogue = new Group(game, null, 'dialogue')
     this.dialogue.add(this.dialogueBox)
@@ -49,17 +44,18 @@ export default class extends Phaser.State {
     this.player = new Meimei({
       x: savedState.player.x,
       y: savedState.player.y,
-      asset: 'player'
+      asset: 'player',
     });
+    this.player.scale = savedState.player.scale;
 
-    this.noah = new Noah({
+    this.friend = new Friend({
       x: 300,
       y: config.gameHeight - 100,
-      asset: 'noah'
+      asset: 'friend'
     })
 
     this.game.add.existing(this.player)
-    this.game.add.existing(this.noah)
+    this.game.add.existing(this.friend)
     this.game.add.existing(this.dialogue)
     // this.camera.follow(this.player);
   }
@@ -71,7 +67,7 @@ export default class extends Phaser.State {
   }
 
   update() {
-    this.game.physics.arcade.collide(this.player, this.noah);
+    this.game.physics.arcade.collide(this.player, this.friend);
     this.player.update(this.cursors)
 
     if (this.input.keyboard.isDown(Phaser.KeyCode.E)) {
@@ -89,6 +85,34 @@ export default class extends Phaser.State {
     if (__DEV__) {
       // uncomment to show sprite debug info
       // this.game.debug.spriteInfo(this.player, 450, 32)
+    }
+  }
+
+  handleDialogue(keyboardEvent) {
+    if (keyboardEvent.keyCode == Phaser.KeyCode.SPACEBAR) {
+      let text = game.ambientText;
+      let inspecting = this.player.inspecting;
+
+      if (this.dialogue.visible) {
+        if (inspecting && inspecting.hasNextAction()) {
+          text = `${inspecting.key}: ${inspecting.nextAction()}`;
+          this.dialogue.visible = true;
+        }
+        else {
+          this.dialogue.visible = false;
+        }
+      }
+      else {
+        if (inspecting && inspecting.hasNextAction()) {
+          text = `${inspecting.key}: ${inspecting.nextAction()}`;
+          this.dialogue.visible = true;
+        }
+        else {
+          this.dialogue.visible = true;
+        }
+      }
+
+      this.dialogueText.setText(text);
     }
   }
 }

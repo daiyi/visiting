@@ -46,14 +46,6 @@ export default class extends Phaser.Sprite {
         }
         this.play('right');
       }
-      // else if (cursors.up.isDown) {
-      //   this.body.velocity.y = -100;
-      //   this.play('up');
-      // }
-      // else if (cursors.down.isDown) {
-      //   this.body.velocity.y = 100;
-      //   this.play('down');
-      // }
       else {
         this.animations.stop();
         this.body.setZeroVelocity();
